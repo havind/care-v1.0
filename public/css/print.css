@@ -1,0 +1,33 @@
+html, body {
+    width: 210mm;
+    height: 297mm;
+}
+
+@page {
+    /* Chrome sets own margins, we change these printer settings */
+    margin: 0;
+    /*padding: 27mm 16mm 27mm 16mm;*/
+}
+
+body {
+    padding: 20mm 16mm 27mm 16mm;
+}
+
+#header {
+    /*background-color: red;*/
+}
+
+#footer {
+    background-color: green;
+    bottom: 0;
+    position: absolute;
+}
+
+#logo {
+    width: 15em;
+}
+
+#qr-code,
+#mr_name {
+    float: right;
+}

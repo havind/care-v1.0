@@ -1,0 +1,60 @@
+a {
+    text-decoration: none;
+}
+
+#main-menu {
+    background-color: #e16a03;
+}
+
+#main-menu a .logo {
+    width: 100px;
+}
+
+#main-menu li a {
+    color: #ffffff;
+}
+
+li#create ul li a {
+    color: #e16a03;
+}
+
+/**
+ * Footer
+ */
+#footer {
+    background-color: #474948 !important;
+}
+
+
+#assign-movements thead tr th:first-child,
+#assign-movements tbody tr th {
+    position: sticky;
+    left: 0px;
+    z-index: 1;
+    background-color: #e9ecef;
+    min-width: 4em;
+}
+
+#assign-movements tbody tr {
+    border-bottom: #0b2e13 solid 5px;
+}
+
+#assign-movements tbody tr td:nth-child(n + 2) div.input-group span {
+    max-width: 7em;
+}
+
+#assign-movements tbody tr td input[type="time"] {
+    max-width: 8.15em;
+}
+
+.material-icons,
+.material-icons-outlined {
+    vertical-align: bottom;
+    font-size: 24px !important;
+}
+
+.btn-sm > .material-icons,
+.btn-sm > .material-icons-outlined {
+    vertical-align: bottom;
+    font-size: 20px !important;
+}
