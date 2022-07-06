@@ -1,7 +1,6 @@
 <script type="text/javascript">
     $(window).on('load', function (e) {
         $.get('{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/users/count', (rawData) => {
-            console.log(rawData)
             if (rawData.data > 0) {
                 let url = '{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/users/all/20';
 
@@ -13,8 +12,6 @@
                 console.log('no records');
             }
         });
-
-
     });
 
     /**
@@ -176,6 +173,7 @@
     }
 
     function generateTablePagination(id, tableData) {
+        console.log(tableData.next_page_url);
         let current_page = tableData.current_page;
         let first_page_url = tableData.first_page_url;
         let from = tableData.from;
@@ -196,7 +194,7 @@
         } else {
             output += '<li class="page-item">';
         }
-        output += '<button class="page-link" onclick="updateTableBody(\'#content\', \'' + first_page_url + '\')">';
+        output += '<button class="page-link" onclick="updateTableBody(\'#users\', \'' + first_page_url + '\')">';
         output += 'First';
         output += '</button>';
         output += '</li>';
@@ -208,7 +206,7 @@
                     } else {
                         output += '<li class="page-item">';
                     }
-                    output += '<button class="page-link" onclick="updateTableBody(\'#content\', \'' + value.url + '\')">';
+                    output += '<button class="page-link" onclick="updateTableBody(\'#users\', \'' + value.url + '\')">';
                     output += value.label
                     output += '</button>';
                     output += '</li>';
@@ -219,7 +217,7 @@
                     } else {
                         output += '<li class="page-item">';
                     }
-                    output += '<button class="page-link" onclick="updateTableBody(\'#content\', \'' + value.url + '\')">'
+                    output += '<button class="page-link" onclick="updateTableBody(\'#users\', \'' + value.url + '\')">'
                     output += value.label
                     output += '</button>';
                     output += '</li>';
@@ -230,7 +228,7 @@
                     } else {
                         output += '<li class="page-item disabled">';
                     }
-                    output += '<button class="page-link" onclick="updateTableBody(\'#content\', \'' + value.url + '\')">' + value.label + '</button>';
+                    output += '<button class="page-link" onclick="updateTableBody(\'#users\', \'' + value.url + '\')">' + value.label + '</button>';
                     output += '</li>';
             }
         });
@@ -239,7 +237,7 @@
         } else {
             output += '<li class="page-item">';
         }
-        output += '<button class="page-link" onclick="updateTableBody(\'#content\', \'' + last_page_url + '\')">Last</button>';
+        output += '<button class="page-link" onclick="updateTableBody(\'#users\', \'' + last_page_url + '\')">Last</button>';
         output += '</li>';
         output += '</ul>';
         output += '</nav>';
@@ -254,10 +252,11 @@
                 dataType: 'json',
                 url: url,
                 jsonpCallback: 'responseJSON',
-                success: (data) => {
-                    data = data.users;
+                success: (rawData) => {
+                    console.log(rawData.data)
+                    data = rawData.data;
                     let usersData = data.data;
-                    $('#content table tbody').empty();
+                    $('#users table tbody').empty();
                     let output;
 
                     $.each(usersData, (key, value) => {
@@ -266,8 +265,8 @@
                         output += data.from + key;
                         output += '</td>';
                         output += '<td class="align-middle">';
-                        output += '<a href="' + ('{{ route("a.human-resources.users.show", ":id") }}').replace(':id', value['id']) + '">';
-                        output += value['first_name'] + ' ' + value['last_name'];
+                        output += '<a href="' + ('{{ route("a.human-resources.users.show", ":id") }}').replace(':id', value['user_id']) + '">';
+                        output += value['user_first_name'] + ' ' + value['user_last_name'];
                         output += '</a>';
                         output += '</td>';
                         if (value['position_name'] == null) {
@@ -289,33 +288,33 @@
                             output += '</td>';
                         }
 
-                        if (value['work_email'] == null) {
-                            if (value['personal_email'] == null) {
+                        if (value['user_work_email'] == null) {
+                            if (value['user_personal_email'] == null) {
                                 output += '<td class="align-middle text-center table-warning text-warning">Not Available</td>';
                             } else {
                                 output += '<td class="align-middle">';
-                                output += value['personal_email'];
+                                output += value['user_personal_email'];
                                 output += '</td>';
                             }
                         } else {
                             output += '<td class="align-middle">';
-                            output += value['work_email'];
+                            output += value['user_work_email'];
                             output += '</td>';
                         }
 
                         output += '</td>';
 
-                        if (value['work_phone'] == null) {
-                            if (value['personal_email'] == null) {
+                        if (value['user_work_phone'] == null) {
+                            if (value['user_personal_email'] == null) {
                                 output += '<td class="align-middle text-center table-warning text-warning">Not Available</td>';
                             } else {
                                 output += '<td class="align-middle">';
-                                output += '+' + value['personal_phone'];
+                                output += '+' + value['user_personal_phone'];
                                 output += '</td>';
                             }
                         } else {
                             output += '<td class="align-middle">';
-                            output += '+' + value['work_phone'];
+                            output += '+' + value['user_work_phone'];
                             output += '</td>';
                         }
 
@@ -325,7 +324,7 @@
                         output += '</tr>';
                     });
                     $(id + ' table tbody').html(output);
-                    generateTablePagination('#content div.ib-pagination', data)
+                    generateTablePagination('#users div.ib-pagination', data)
                 }
             }
         )

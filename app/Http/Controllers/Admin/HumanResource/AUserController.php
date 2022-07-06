@@ -206,7 +206,31 @@ class AUserController extends Controller
         //
     }
 
+    /**
+     *
+     */
+    public function reset_password($id)
+    {
+        $profile = User::select('id', 'first_name', 'last_name')
+            ->firstWhere('id', $id);
 
+        return view('admin.human_resource.users.reset_password', [
+            'profile' => $profile,
+            'active_primary_menu' => 'reset-password',
+        ]);
+    }
+
+    /**
+     *
+     */
+    public function update_password(Request $request, $id)
+    {
+        User::where('id', $id)
+            ->update([
+                'password' => bcrypt($request->input('reset-password')),
+            ]);
+        return redirect()->route('a.users.show', $id);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -221,8 +245,8 @@ class AUserController extends Controller
             'user-first-name' => 'required|string',
             'user-last-name' => 'required|string',
             'user-username' => 'required|string',
-            'user-department' => 'required|numeric',
-            'user-position' => 'required|numeric',
+            'user-departments' => 'required|numeric',
+            'user-positions' => 'required|numeric',
             'user-supervisor' => 'required|numeric',
             'user-work-email' => 'email',
             'user-work-phone' => 'string',
@@ -270,7 +294,7 @@ class AUserController extends Controller
 
         $staff->last_name = $request->input('last-name');
         $staff->position_id = $request->input('positions-id');
-        $staff->department_id = $request->input('department-id');
+        $staff->department_id = $request->input('departments-id');
         $staff->supervisor_id = $request->input('supervisor-id');
         $staff->work_email = $work_email;
         $staff->work_phone = $work_phone;
@@ -283,78 +307,52 @@ class AUserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
      *
+     * @return Application|Factory|View|\Illuminate\Http\Response
      */
-    public function reset_password($id)
+    public function permissions($id)
     {
-        $profile = User::select('id', 'first_name', 'last_name')
-            ->firstWhere('id', $id);
+        if (ibFunctions::check_permission('admin_User_permissions')) {
 
-        return view('admin.human_resource.users.reset_password', [
-            'profile' => $profile,
-            'active_primary_menu' => 'reset-password',
+        } else {
+
+        }
+        $user = User::firstWhere('id', $id);
+        $permissions = Permission::where('is_delete', false)->get();
+        $user_permissions = UserPermissions::where('user_id', $id)->get(['id', 'permission', 'value']);
+
+        return view('admin.human_resource.users.permissions', [
+            'profile' => $user,
+            'permissions' => $permissions,
+            'user_permissions' => $user_permissions,
+            'active_primary_menu' => 'permissions',
         ]);
     }
 
     /**
+     * Display a listing of the resource.
      *
+     * @return \Illuminate\Http\Response
      */
-    public function update_password(Request $request, $id)
+    public function update_permissions(Request $request, $id)
     {
-        User::where('id', $id)
-            ->update([
-                'password' => bcrypt($request->input('reset-password')),
-            ]);
-        return redirect()->route('a.users.show', $id);
-    }
-}
+        $user_permissions = UserPermissions::where('user_id', $id)->get();
 
-/**
- * Display a listing of the resource.
- *
- * @return Application|Factory|View|\Illuminate\Http\Response
- */
-public function permissions($id)
-{
-    if (ibFunctions::check_permission('admin_User_permissions')) {
+        foreach ($user_permissions as $user_permission) {
+            if ($request->input($user_permission->permission) == null) {
+                $value = false;
+            } else {
+                $value = true;
+            }
 
-    } else {
-
-    }
-    $user = User::firstWhere('id', $id);
-    $permissions = Permission::where('is_delete', false)->get();
-    $user_permissions = UserPermissions::where('user_id', $id)->get(['id', 'permission', 'value']);
-
-    return view('admin.human_resource.users.permissions', [
-        'profile' => $user,
-        'permissions' => $permissions,
-        'user_permissions' => $user_permissions,
-        'active_primary_menu' => 'permissions',
-    ]);
-}
-
-/**
- * Display a listing of the resource.
- *
- * @return \Illuminate\Http\Response
- */
-public function update_permissions(Request $request, $id)
-{
-    $user_permissions = UserPermissions::where('user_id', $id)->get();
-
-    foreach ($user_permissions as $user_permission) {
-        if ($request->input($user_permission->permission) == null) {
-            $value = false;
-        } else {
-            $value = true;
+            UserPermissions::where('user_id', $id)
+                ->where('permission', $user_permission->permission)
+                ->update([
+                    'value' => $value,
+                    'updated_at' => now(),
+                ]);
         }
-
-        UserPermissions::where('user_id', $id)
-            ->where('permission', $user_permission->permission)
-            ->update([
-                'value' => $value,
-                'updated_at' => now(),
-            ]);
+        return redirect()->route('a.users.permissions', $id);
     }
-    return redirect()->route('a.users.permissions', $id);
 }

@@ -5,7 +5,6 @@
 @endsection
 
 @section('ib-content-body')
-
     <div class="mx-3 mt-3">
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -31,19 +30,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">First name</td>
+                        <td>First name</td>
                         <td>
                             <input class="form-control" id="user-first-name" name="user-first-name" type="text" value="{{ $user->user_first_name }}">
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Last name</td>
+                        <td>Last name</td>
                         <td>
                             <input class="form-control" id="user-last-name" name="user-last-name" type="text" value="{{ $user->user_last_name }}">
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Username</td>
+                        <td>Username</td>
                         <td>
                             <input class="form-control" id="user-username" name="user-username" type="text" value="{{ $user->user_username }}">
                         </td>
@@ -54,7 +53,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Department</td>
+                        <td>Department</td>
                         <td>
                             <select class="form-select" id="user-department" name="user-department">
                                 <option value="0" disabled>-- SELECT DEPARTMENT --</option>
@@ -62,7 +61,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Position</td>
+                        <td>Position</td>
                         <td>
                             <select id="user-position" name="user-position" class="form-select">
                                 <option value="0" disabled>-- SELECT POSITION --</option>
@@ -71,7 +70,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Supervisor</td>
+                        <td>Supervisor</td>
                         <td>
                             <select id="user-supervisor" name="user-supervisor" class="form-select">
                                 <option value="0" disabled>-- SELECT SUPERVISOR --</option>
@@ -89,13 +88,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">E-mail</td>
+                        <td>E-mail</td>
                         <td>
                             <input class="form-control" id="user-work-email" name="user-work-email" type="email" value="{{ $user->user_work_email }}">
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Phone number</td>
+                        <td>Phone number</td>
                         <td>
                             @if($user->user_work_phone != null)
                                 <input class="form-control" id="user-work-phone" name="user-work-phone" type="text" value="{{ $user->user_work_phone }}">
@@ -110,13 +109,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">E-mail</td>
+                        <td>E-mail</td>
                         <td>
                             <input class="form-control" id="user-personal-email" name="user-personal-email" type="email" value="{{ $user->user_personal_email != null ? $user->user_personal_email : 'Not Available' }}">
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 20%;">Phone number</td>
+                        <td>Phone number</td>
                         <td>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1">+</span>

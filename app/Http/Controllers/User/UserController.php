@@ -48,7 +48,7 @@ class UserController extends Controller
         return view('users.profile', [
             'active_primary_menu' => 'profile',
             'profile' => $profile,
-            'department' => $department,
+            'departments' => $department,
             'positions' => $position,
             'supervisor' => $supervisor,
         ]);

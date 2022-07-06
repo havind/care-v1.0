@@ -72,14 +72,14 @@ Route::prefix('human-resources')->group(function () {
      * Departments
      */
     Route::get('departments/count', [DepartmentAPIController::class, 'count'])->name('api.human-resources.departments.count');
-    Route::get('departments/all', [DepartmentAPIController::class, 'all'])->name('api.human-resources.departments.all');
+    Route::get('departments/all/{paginate?}', [DepartmentAPIController::class, 'all'])->name('api.human-resources.departments.all');
     Route::get('departments/allActive', [DepartmentAPIController::class, 'allActive'])->name('api.human-resources.departments.allActive');
     Route::get('departments/allInactive', [DepartmentAPIController::class, 'allInactive'])->name('api.human-resources.departments.allInactive');
 
     /**
      * Positions
      */
-    Route::get('departments/{department}/positions', [PositionAPIController::class, 'positions'])->name('api.human-resources.departments.positions');
+    Route::get('departments/{departments}/positions', [PositionAPIController::class, 'positions'])->name('api.human-resources.departments.positions');
 });
 /**
  * Risk

@@ -119,7 +119,7 @@
     {{--        </div>--}}
     {{--    </div>--}}
 
-    {{--    <div class="position-absolute page-actions">--}}
+    {{--    <div class="positions-absolute page-actions">--}}
     {{--        @yield('page_actions')--}}
     {{--    </div>--}}
 

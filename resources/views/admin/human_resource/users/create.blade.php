@@ -122,9 +122,9 @@
 
         });
 
-        $('#department').on('change', () => {
-            if ($('#department option:selected').val() != 0) {
-                console.log($('#department option:selected').val());
+        $('#departments').on('change', () => {
+            if ($('#departments option:selected').val() != 0) {
+                console.log($('#departments option:selected').val());
 
                 i = 0;
                 positions = [];

@@ -3,11 +3,11 @@
      * Set Department Select after loading.
      */
     $.get('{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/allActive', (rawData) => {
-        $('#user-department').empty();
-        $('#user-department').append('<option value="0" disabled>-- SELECT DEPARTMENT --</option>');
+        $('#user-departments').empty();
+        $('#user-departments').append('<option value="0" disabled>-- SELECT DEPARTMENT --</option>');
         $.each(data = rawData.data, (index, value) => {
 
-            $('#user-department').append('<option value="' + value.id + '"' + (value.id === {{ $user->department_id }} ? 'selected' : '') + '>' + value.name + '</option>');
+            $('#user-departments').append('<option value="' + value.id + '"' + (value.id === {{ $user->department_id }} ? 'selected' : '') + '>' + value.name + '</option>');
         });
     });
 
@@ -15,23 +15,23 @@
      * Set Positions Select after loading.
      */
     $.get('{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/{{ $user->department_id }}/positions', (rawData) => {
-        $('#user-position').empty();
-        $('#user-position').append('<option value="0">-- SELECT POSITION --</option>');
+        $('#user-positions').empty();
+        $('#user-positions').append('<option value="0">-- SELECT POSITION --</option>');
         $.each(data = rawData.data, (index, value) => {
-            $('#user-position').append('<option value="' + value.id + '"' + (value.id === {{ $user->position_id }} ? 'selected' : '') + '>' + value.name + '</option>');
+            $('#user-positions').append('<option value="' + value.id + '"' + (value.id === {{ $user->position_id }} ? 'selected' : '') + '>' + value.name + '</option>');
         });
     });
 
     /**
      * Set Positions Select after Department is being selected.
      */
-    $('#user-department').on('change', () => {
-        $.get('{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/' + $('#user-department').val() + '/positions', (rawData) => {
-            $('#user-position').empty();
-            $('#user-position').append('<option value="0" selected>-- SELECT POSITION --</option>');
+    $('#user-departments').on('change', () => {
+        $.get('{{ request()->secure() ? "https" : "http" }}://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/' + $('#user-departments').val() + '/positions', (rawData) => {
+            $('#user-positions').empty();
+            $('#user-positions').append('<option value="0" selected>-- SELECT POSITION --</option>');
             $.each(data = rawData.data, (index, value) => {
 
-                $('#user-position').append('<option value="' + value.id + '"' + (value.id === {{ $user->position_id }} ? 'selected' : '') + '>' + value.name + '</option>');
+                $('#user-positions').append('<option value="' + value.id + '"' + (value.id === {{ $user->position_id }} ? 'selected' : '') + '>' + value.name + '</option>');
             });
         });
     });

@@ -1,13 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminController, HumanResource\ADepartmentController, HumanResource\APositionController, HumanResource\AUserController};
-use App\Http\Controllers\Admin\AdminDepartment\{AAccommodationController};
-use App\Http\Controllers\Admin\Finance\{ABudgetLineController, AFundCodeController, AProjectController};
-use App\Http\Controllers\Admin\Risk\{AMovementRequestController};
+use App\Http\Controllers\Admin\{AdminController, AdminDepartment\AAccommodationController, Finance\ABudgetLineController, Finance\AFundCodeController, Finance\AProjectController, HumanResource\ADepartmentController, HumanResource\APermissionController, HumanResource\APositionController, HumanResource\AUserController, Risk\AMovementRequestController};
 use App\Http\Controllers\Finance\{BudgetLineController, FinanceController, FundCodeController};
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HumanResource\{DepartmentController, HumanResourceController, PositionController, StaffController};
-use App\Http\Controllers\Risk\{ApprovalController, Fleet\CarController, Fleet\FleetController, LocationController, MovementRequestController, RiskController};
 use App\Http\Controllers\User\{MovementController, UserController};
 use Illuminate\Support\Facades\Route;
 
@@ -32,30 +28,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Auth::routes();
 
 // Risk
-Route::prefix('risk')->group(function () {
-    Route::get('/', RiskController::class)->name('risk.index');
-
-    Route::prefix('fleet')->group(function () {
-        Route::get('/', FleetController::class)->name('fleet');
-        Route::get('/movements-schedule', [FleetController::class, 'movements_schedule'])->name('fleet.movements-schedule');
-        Route::get('/assign-movements', [FleetController::class, 'assign_movements'])->name('fleet.assign-movements');
-
-        Route::get('/cars/{car}/delete', [CarController::class, 'delete'])->name('cars.delete');
-        Route::resource('cars', CarController::class);
-    });
-
-    // Approval
-    Route::resource('approvals', ApprovalController::class)->except(['create', 'store', 'edit', 'destroy']);
-
-    // Movement Request
-    Route::get('/movement-requests/{movement_request}/delete', [MovementRequestController::class, 'delete'])->name('movement-requests.delete');
-    Route::get('/movement-requests/{movement_request}/print', [MovementRequestController::class, 'print'])->name('movement-requests.print');
-    Route::resource('movement-requests', MovementRequestController::class)->except(['create', 'store', 'edit', 'update']);
-
-    // Location
-    Route::get('/locations/{location}/delete', [LocationController::class, 'delete'])->name('locations.delete');
-    Route::resource('locations', LocationController::class)->except(['show']);
-});
+require __DIR__ . '/risk.php';
 
 // Human Resources
 Route::prefix('human-resources')->group(function () {
@@ -66,13 +39,13 @@ Route::prefix('human-resources')->group(function () {
     Route::resource('staff', StaffController::class);
 
     // Department
-    Route::get('/departments/{department}/delete', [DepartmentController::class, 'delete'])->name('departments.delete');
-    Route::get('/departments/{department}/staff', [DepartmentController::class, 'departmentStaff'])->name('departments.staff');
-    Route::get('/departments/{department}/staff/create', [DepartmentController::class, 'departmentNewStaff'])->name('departments.staff.create');
+    Route::get('/departments/{departments}/delete', [DepartmentController::class, 'delete'])->name('departments.delete');
+    Route::get('/departments/{departments}/staff', [DepartmentController::class, 'departmentStaff'])->name('departments.staff');
+    Route::get('/departments/{departments}/staff/create', [DepartmentController::class, 'departmentNewStaff'])->name('departments.staff.create');
     Route::resource('departments', DepartmentController::class);
 
     // Position
-    Route::get('/departments/{department}/positions/{positions}/delete', [PositionController::class, 'delete'])->name('departments.positions.delete');
+    Route::get('/departments/{departments}/positions/{positions}/delete', [PositionController::class, 'delete'])->name('departments.positions.delete');
     Route::resource('departments.positions', PositionController::class);
 });
 
@@ -96,7 +69,9 @@ Route::prefix('a')->group(function () {
     // Home
     Route::get('/', AdminController::class)->name('a.index');
 
-    // Finance
+    /**
+     * Finance
+     */
     Route::prefix('finance')->group(function () {
         Route::resource('fund-codes', AFundCodeController::class, ['as' => 'a']);
         Route::resource('budget-lines', ABudgetLineController::class, ['as' => 'a']);
@@ -105,12 +80,14 @@ Route::prefix('a')->group(function () {
         Route::resource('projects', AProjectController::class, ['as' => 'a']);
     });
 
-    // Human Resources
+    /**
+     * Human Resources
+     */
     Route::prefix('human-resources')->group(function () {
         /**
          * Departments
          */
-        Route::get('/departments/{department}/delete', [ADepartmentController::class, 'delete'])->name('a.human-resources.departments.delete');
+        Route::get('/departments/{departments}/delete', [ADepartmentController::class, 'delete'])->name('a.human-resources.departments.delete');
         Route::resource('departments', ADepartmentController::class, ['as' => 'a.human-resources']);
 
         /**
@@ -124,8 +101,8 @@ Route::prefix('a')->group(function () {
          * Users
          */
         Route::get('/users/{users}/delete', [AUserController::class, 'delete'])->name('a.human-resources.users.delete');
-        Route::get('/users/{users}/permissions', [AUserController::class, 'permissions'])->name('a.human-resources.users.permissions');
-        Route::put('/users/{users}/permissions', [AUserController::class, 'update_permissions'])->name('a.human-resources.users.update-permissions');
+        Route::get('/users/{users}/permissions', [APermissionController::class, 'show'])->name('a.human-resources.users.permissions.show');
+        Route::put('/users/{users}/permissions', [AUserController::class, 'update'])->name('a.human-resources.users.permissions.update');
         Route::get('/users/{users}/reset-password', [AUserController::class, 'reset_password'])->name('a.human-resources.users.reset-password');
         Route::put('/users/{users}/reset-password', [AUserController::class, 'update_password'])->name('a.human-resources.users.reset-password');
         Route::resource('users', AUserController::class, ['as' => 'a.human-resources']);

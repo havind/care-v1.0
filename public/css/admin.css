@@ -527,6 +527,6 @@ li#quick-add .section {
 }
 
 .ib-show-table td:nth-child(1) {
-    min-width: 10rem;
+    min-width: 15rem;
 }
 

@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Admin\HumanResource;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ADepartmentController extends Controller
 {
@@ -27,34 +31,21 @@ class ADepartmentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View|Response
      */
     public function index()
     {
-        $departments = Department::select(
-            'departments.id AS dp_id',
-            'departments.name AS dp_title',
-            'departments.supervisor_id AS dp_supervisor_id',
-            'u.first_name AS dp_supervisor_first_name',
-            'u.last_name AS dp_supervisor_last_name',
-        )
-            ->leftJoin('users AS u', 'u.id', '=', 'departments.supervisor_id')
-            ->where('departments.is_delete', 0)
-            ->where('u.is_delete', 0)
-            ->get();
-
-        return view('admin.human_resource.department.index', [
+        return view('admin.human_resource.departments.index', [
             'navbar_category' => 'human-resources',
             'navbar_active' => 'departments',
             'title' => 'Departments',
-            'departments' => $departments,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -65,7 +56,7 @@ class ADepartmentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -76,28 +67,29 @@ class ADepartmentController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function show($id)
     {
         $department = Department::select(
-            'departments.id AS dp_id',
-            'departments.name AS dp_title',
-            'departments.supervisor_id AS dp_supervisor_id',
-            'u.first_name AS dp_supervisor_first_name',
-            'u.last_name AS dp_supervisor_last_name',
-            'departments.description AS dp_description',
-            'departments.created_at AS dp_created_at',
-            'departments.updated_at AS dp_updated_at',
+            'departments.id AS dep_id',
+            'departments.name AS dep_title',
+            'departments.supervisor_id AS supervisor_id',
+            'u.first_name AS supervisor_first_name',
+            'u.last_name AS supervisor_last_name',
+            'departments.description AS dep_description',
+            'departments.created_at AS dep_created_at',
+            'departments.updated_at AS dep_updated_at',
         )
             ->leftJoin('users AS u', 'u.id', '=', 'departments.supervisor_id')
             ->firstWhere('departments.id', $id);
 
-        return view('admin.human_resource.department.show', [
+        return view('admin.human_resource.departments.show', [
+            'navbar_category' => 'human-resources',
             'navbar_active' => 'departments',
-            'title' => $department->dp_title,
-            'department' => $department,
             'active_primary_menu' => 'view',
+            'title' => $department->dep_title,
+            'department' => $department,
         ]);
     }
 
@@ -105,11 +97,30 @@ class ADepartmentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function edit($id)
     {
-        //
+        $department = Department::select(
+            'departments.id AS dep_id',
+            'departments.name AS dep_title',
+            'departments.supervisor_id AS supervisor_id',
+            'u.first_name AS supervisor_first_name',
+            'u.last_name AS supervisor_last_name',
+            'departments.description AS dep_description',
+            'departments.created_at AS dep_created_at',
+            'departments.updated_at AS dep_updated_at',
+        )
+            ->leftJoin('users AS u', 'u.id', '=', 'departments.supervisor_id')
+            ->firstWhere('departments.id', $id);
+
+        return view('admin.human_resource.departments.edit', [
+            'navbar_category' => 'human-resources',
+            'navbar_active' => 'departments',
+            'active_primary_menu' => 'edit',
+            'title' => 'Edit ' . $department->dep_title,
+            'department' => $department,
+        ]);
     }
 
     /**
@@ -117,7 +128,7 @@ class ADepartmentController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -128,18 +139,23 @@ class ADepartmentController extends Controller
      * Show the specified resource from storage to be deleted.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View|Response
      */
     public function delete($id)
     {
-        //
+        return view('admin.human_resource.departments.delete', [
+            'navbar_category' => 'human-resources',
+            'navbar_active' => 'departments',
+            'active_primary_menu' => 'delete',
+            'title' => 'Edit',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

@@ -95,7 +95,7 @@ class StaffController extends Controller
             $user->work_phone = $request->input('work-phone');
             $user->supervisor_id = ($request->input('supervisor') == null) ? 0 : $request->input('supervisor');
             $user->position_id = ($request->input('positions') == null) ? 0 : $request->input('positions');
-            $user->department_id = ($request->input('department') == null) ? 0 : $request->input('department');
+            $user->department_id = ($request->input('departments') == null) ? 0 : $request->input('departments');
             $user->password = bcrypt($generated_password);
             $user->is_active = 0;
             $user->save();
@@ -151,7 +151,7 @@ class StaffController extends Controller
         return view('human_resource.staff.show', [
             'users' => $user,
             'positions' => $position,
-            'department' => $department,
+            'departments' => $department,
             'supervisor' => $supervisor,
             'acting_supervisor' => $acting_supervisor,
             'active_primary_menu' => 'view',
@@ -197,6 +197,37 @@ class StaffController extends Controller
         } else {
             return redirect()->route('access-denied');
         }
+    }
+
+    /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
+    {
+        $user = User::firstWhere('id', $id);
+        return view('human_resource.staff.delete', [
+            'users' => $user,
+            'active_primary_menu' => 'delete',
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        User::where('id', $id)
+            ->update([
+                'is_active' => 0,
+            ]);
+
+        return redirect()->route('staff.index');
     }
 
     /**
@@ -246,7 +277,7 @@ class StaffController extends Controller
 
         $staff->last_name = $request->input('last-name');
         $staff->position_id = $request->input('positions-id');
-        $staff->department_id = $request->input('department-id');
+        $staff->department_id = $request->input('departments-id');
         $staff->supervisor_id = $request->input('supervisor-id');
         $staff->work_email = $work_email;
         $staff->work_phone = $work_phone;
@@ -256,36 +287,5 @@ class StaffController extends Controller
         $staff->save();
 
         return redirect()->route('staff.show', $id);
-    }
-
-    /**
-     * Show the form for deleting the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function delete($id)
-    {
-        $user = User::firstWhere('id', $id);
-        return view('human_resource.staff.delete', [
-            'users' => $user,
-            'active_primary_menu' => 'delete',
-        ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        User::where('id', $id)
-            ->update([
-                'is_active' => 0,
-            ]);
-
-        return redirect()->route('staff.index');
     }
 }

@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin\HumanResource;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
-use App\Models\Permission;
+use App\Models\Position;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class APositionController extends Controller
 {
@@ -22,29 +26,33 @@ class APositionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function index($department_id)
     {
-        $permissions = Permission::all();
-
-        dd($permissions[0]->name);
+        $positions = Position::select()
+            ->where('department_id', $department_id)
+            ->where('is_delete', 1)
+            ->get();
 
         $department = Department::where('id', $department_id)
             ->get(['id', 'name'])->first();
 
-
-
-        return view('admin.department.positions.index', [
-            'department' => $department,
+        return view('admin.human_resource.departments.positions.index', [
+            'navbar_category' => 'human-resources',
+            'navbar_active' => 'departments',
             'active_primary_menu' => 'positions',
+            'title' => $department->name . ' Positions',
+            'positions' => $positions,
+            'department' => $department,
+
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -55,7 +63,7 @@ class APositionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -66,7 +74,7 @@ class APositionController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -77,7 +85,7 @@ class APositionController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -89,7 +97,7 @@ class APositionController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -100,7 +108,7 @@ class APositionController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

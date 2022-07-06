@@ -126,14 +126,14 @@
         /**
          * 01. Filter Positions by Department.
          */
-        $('#department').change(() => {
-            if ($('#department').val() == 0) {
+        $('#departments').change(() => {
+            if ($('#departments').val() == 0) {
                 $('#positions').val(0);
                 $('#positions').prop('disabled', 'disabled')
             } else {
                 $('#positions').prop('disabled', '')
 
-                const url = 'http://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/positionByDepartment/' + $('#department').val();
+                const url = 'http://{{ request()->getHost() . ':' . request()->getPort() }}/api/human-resources/departments/positionByDepartment/' + $('#departments').val();
 
                 $.ajax({
                     type: "GET",

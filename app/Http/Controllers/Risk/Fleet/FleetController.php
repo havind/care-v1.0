@@ -40,6 +40,9 @@ class FleetController extends Controller
     public function movements_schedule()
     {
         return view('risk.fleet.movements_schedule', [
+            'navbar_category' => 'risk',
+            'navbar_active' => 'movements_schedule',
+            'title' => 'Movements Schedule',
             'active_primary_menu' => 'movements_schedule',
         ]);
     }

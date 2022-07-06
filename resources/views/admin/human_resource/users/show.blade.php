@@ -5,6 +5,11 @@
 @endsection
 
 @section('ib-content-body')
+    <div class="form-text fst-italic ms-3">created at {{ $user->user_created_at }}
+        @if($user->user_updated_at != null )
+            (Updated at {{ $user->user_updated_at }})
+        @endif
+    </div>
     <div class="d-flex">
         <div class="col-6">
             <table class="table table-hover table-borderless m-3 ib-show-table">

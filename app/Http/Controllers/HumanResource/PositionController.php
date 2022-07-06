@@ -32,9 +32,9 @@ class PositionController extends Controller
             ->where('is_delete', false)
             ->get(['id', 'name', 'description', 'created_at', 'updated_at']);
 
-        return view('human_resource.department.positions.index', [
+        return view('human_resource.departments.positions.index', [
             'active_primary_menu' => 'positions',
-            'department' => $department,
+            'departments' => $department,
             'positions' => $positions,
         ]);
     }
@@ -48,8 +48,8 @@ class PositionController extends Controller
     {
         $department = Department::select('id', 'name')->firstWhere('id', $department_id);
 
-        return view('human_resource.department.positions.create', [
-            'department' => $department,
+        return view('human_resource.departments.positions.create', [
+            'departments' => $department,
         ]);
     }
 
@@ -89,9 +89,9 @@ class PositionController extends Controller
             ->firstWhere('id', $position_id);
 
         if ($position != null) {
-            return view('human_resource.department.positions.show', [
+            return view('human_resource.departments.positions.show', [
                 'active_primary_menu' => 'view',
-                'department' => $department,
+                'departments' => $department,
                 'positions' => $position,
             ]);
         } else {
@@ -113,27 +113,14 @@ class PositionController extends Controller
             ->where('is_delete', 0)
             ->firstWhere('id', $position_id);
         if ($position != null) {
-            return view('human_resource.department.positions.edit', [
+            return view('human_resource.departments.positions.edit', [
                 'active_primary_menu' => 'edit',
-                'department' => $department,
+                'departments' => $department,
                 'positions' => $position,
             ]);
         } else {
             return redirect()->route('errors.page-not-found');
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public
-    function update(Request $request, $id)
-    {
-        dd($request);
     }
 
     /**
@@ -151,9 +138,9 @@ class PositionController extends Controller
             ->where('is_delete', 0)
             ->firstWhere('id', $position_id);
 
-        return view('human_resource.department.positions.delete', [
+        return view('human_resource.departments.positions.delete', [
             'active_primary_menu' => 'delete',
-            'department' => $department,
+            'departments' => $department,
             'positions' => $position,
         ]);
     }
@@ -176,5 +163,18 @@ class PositionController extends Controller
 
             return redirect()->route('departments.positions.index', $department_id);
         }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function update(Request $request, $id)
+    {
+        dd($request);
     }
 }

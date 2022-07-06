@@ -43,7 +43,7 @@ class DepartmentController extends Controller
                 }
             }
 
-            return view('human_resource.department.index', [
+            return view('human_resource.departments.index', [
                 'departments' => $departments,
                 'supervisors' => $supervisors,
             ]);
@@ -64,7 +64,7 @@ class DepartmentController extends Controller
                 ->orderBy('first_name')
                 ->where('is_delete', 0)
                 ->get();
-            return view('human_resource.department.create', [
+            return view('human_resource.departments.create', [
                 'users' => $users,
             ]);
         }
@@ -82,13 +82,13 @@ class DepartmentController extends Controller
         if (!ibFunctions::check_permission('humanResource_department_create')) {
             return redirect()->route('access_denied');
         } else {
-            if (Department::where('name', $request->input('department-name'))->count() != 0) {
+            if (Department::where('name', $request->input('departments-name'))->count() != 0) {
                 return redirect()->route('departments.create');
             } else {
                 Department::insert([
-                    'name' => $request->input('department-name'),
-                    'supervisor_id' => $request->input('department-supervisor'),
-                    'description' => $request->input('department-description'),
+                    'name' => $request->input('departments-name'),
+                    'supervisor_id' => $request->input('departments-supervisor'),
+                    'description' => $request->input('departments-description'),
                     'created_at' => now(),
                 ]);
 
@@ -116,8 +116,8 @@ class DepartmentController extends Controller
                 $supervisor = null;
             }
 
-            return view('human_resource.department.show', [
-                'department' => $department,
+            return view('human_resource.departments.show', [
+                'departments' => $department,
                 'supervisor' => $supervisor,
                 'active_primary_menu' => 'view',
             ]);
@@ -142,8 +142,8 @@ class DepartmentController extends Controller
             ->orderBy('first_name')
             ->get(['id', 'first_name', 'last_name']);
 
-        return view('human_resource.department.edit', [
-            'department' => $department,
+        return view('human_resource.departments.edit', [
+            'departments' => $department,
             'users' => $users,
             'active_primary_menu' => 'edit',
         ]);
@@ -179,8 +179,8 @@ class DepartmentController extends Controller
     public function delete($id)
     {
         $department = Department::firstWhere('id', $id);
-        return view('human_resource.department.delete', [
-            'department' => $department,
+        return view('human_resource.departments.delete', [
+            'departments' => $department,
             'active_primary_menu' => 'delete',
         ]);
     }
@@ -201,7 +201,7 @@ class DepartmentController extends Controller
     }
 
     /**
-     * Display a listing of staff by department.
+     * Display a listing of staff by departments.
      *
      * @return \Illuminate\Http\Response
      */
@@ -220,8 +220,8 @@ class DepartmentController extends Controller
             ->where('department_id', $id)
             ->get();
 
-        return view('human_resource.department.staff.index', [
-            'department' => $department,
+        return view('human_resource.departments.staff.index', [
+            'departments' => $department,
             'staff' => $staff,
             'positions' => $positions,
             'active_primary_menu' => 'staff',
@@ -231,7 +231,8 @@ class DepartmentController extends Controller
     /**
      *
      */
-    public function departmentNewStaff($id) {
+    public function departmentNewStaff($id)
+    {
         $department = Department::select('id', 'name')
             ->where('id', $id)
             ->firstOrFail();
@@ -239,9 +240,9 @@ class DepartmentController extends Controller
         $departments = Department::select('id', 'name')
             ->get();
 
-//        dd($department);
-        return view('human_resource.department.staff.create', [
-            'department' => $department,
+//        dd($departments);
+        return view('human_resource.departments.staff.create', [
+            'departments' => $department,
             'departments' => $departments,
         ]);
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\HumanResource;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\JsonResponse as JsonResponseAlias;
 
 class DepartmentAPIController extends Controller
@@ -31,12 +32,22 @@ class DepartmentAPIController extends Controller
 
     /**
      * Get All Users.
-     * @return JsonResponseAlias
+     * @return
      */
-    public function all(): JsonResponseAlias
+    public function all($paginate = null)
     {
+        $departments = Department::select(
+            'departments.id AS department_id',
+            'departments.name AS department_title',
+            'departments.supervisor_id AS supervisor_id',
+            'sp.first_name AS supervisor_first_name',
+            'sp.last_name AS supervisor_last_name',
+        )
+            ->leftJoin('users AS sp', 'sp.id', '=', 'departments.supervisor_id')
+            ->paginate($paginate);
+
         return response()->json([
-            'data' => Department::all(),
+            'data' => $departments,
         ]);
     }
 

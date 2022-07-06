@@ -6,8 +6,8 @@
     <li class="breadcrumb-item active" aria-current="page">New department</li>
 @endsection
 
-@section('title', 'New department')
-@section('heading', 'New department')
+@section('title', 'New departments')
+@section('heading', 'New departments')
 
 @section('primary_menu')
     <hr/>
